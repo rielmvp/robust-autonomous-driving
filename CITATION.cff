@@ -1,0 +1,31 @@
+cff-version: 1.2.0
+message: "If you use RADBench, please cite the paper below."
+title: "RADBench: Evaluating Foundation VLMs for Corner Case Description on A Comprehensive Dataset"
+type: conference-paper
+license: MIT
+url: "https://ieeexplore.ieee.org/abstract/document/11623818/"
+authors:
+  - family-names: Manalu
+    given-names: Gabriel
+  - family-names: Vo
+    given-names: An
+  - family-names: Duc
+    given-names: Do Minh
+  - family-names: Tau
+    given-names: Nhat-Quang
+  - family-names: Son
+    given-names: Nguyen Dinh
+  - family-names: Son
+    given-names: Hoang Minh
+  - family-names: Hwang
+    given-names: Hyeontaek
+  - family-names: Lee
+    given-names: Jaesung
+  - family-names: Choi
+    given-names: Hyojin
+  - family-names: Phong
+    given-names: Tran Tuan
+  - family-names: Kim
+    given-names: Daeyoung
+date-released: 2026-01-01
+notes: "2026 IEEE Intelligent Vehicles Symposium (IV), pp. 1869-1876. Update date-released and add DOI when available."

@@ -1,0 +1,21 @@
+__pycache__/
+*.py[cod]
+.ipynb_checkpoints/
+venv/
+.env
+
+# secrets
+api_key/
+*.key
+
+# data lives on Hugging Face, not in git
+dataset/
+data/
+results/
+hf_build*/
+
+# OS / sync files
+.DS_Store
+Thumbs.db
+desktop.ini
+**/desktop.ini
