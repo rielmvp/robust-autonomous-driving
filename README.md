@@ -10,7 +10,7 @@
 
 [![Paper](https://img.shields.io/badge/Paper-IEEE_Xplore-00629B.svg)](https://ieeexplore.ieee.org/abstract/document/11623818/)
 [![Project Page](https://img.shields.io/badge/Project_Page-robustautonomousdriving.github.io-blue.svg)](https://robustautonomousdriving.github.io)
-[![Hugging Face](https://img.shields.io/badge/🤗%20Hugging%20Face-Dataset_(soon)-yellow.svg)](#dataset)
+[![Hugging Face](https://img.shields.io/badge/🤗%20Hugging%20Face-Dataset-yellow.svg)](https://huggingface.co/datasets/gabrieldavin23/robust-autonomous-driving)
 [![Code License](https://img.shields.io/badge/Code_License-MIT-green.svg)](LICENSE)
 
 </div>
@@ -82,19 +82,29 @@ Accuracy (%) of 11 foundation VLMs on all 522 scenarios:
 
 ## Dataset
 
-The dataset is not public yet. When released it will be hosted on Hugging Face:
+You can download the dataset from [Hugging Face](https://huggingface.co/datasets/gabrieldavin23/robust-autonomous-driving):
 
-```python
-# planned, not available yet
-from datasets import load_dataset
-ds = load_dataset("RADBench/RADBench")  # repo id to be confirmed
+```bash
+hf download gabrieldavin23/robust-autonomous-driving --repo-type dataset --include "dataset/*" --local-dir .
+cd dataset && unzip -q '*.zip' && cd ..
+```
+
+This produces the layout the evaluation code expects:
+
+```
+dataset/
+├── radbench.json
+├── MMAU/sampled_frames_{4,8,16,32}/<scenario>/images/*.jpg
+├── UnusualData/...
+├── VEO3/...
+└── GTA/...
 ```
 
 ## Roadmap
 
 - [x] Paper: [IEEE Xplore](https://ieeexplore.ieee.org/abstract/document/11623818/)
 - [x] Project page: [robustautonomousdriving.github.io](https://robustautonomousdriving.github.io)
-- [ ] Dataset on Hugging Face
+- [x] Dataset on Hugging Face
 - [ ] Code for running models on the benchmark
 
 ## Citation
