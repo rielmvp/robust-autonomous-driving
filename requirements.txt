@@ -1,0 +1,5 @@
+openai>=1.0
+anthropic
+google-genai
+Pillow
+huggingface_hub>=0.34

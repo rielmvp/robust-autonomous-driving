@@ -17,9 +17,6 @@
 
 ---
 
-> **Status: pre-release.** This repository currently describes the project. The evaluation toolkit and the dataset
-> are being cleaned up and will be released here and on Hugging Face. See the [roadmap](#roadmap).
-
 <p align="center">
   <img src="./figures/radbench_main_figure.jpg" alt="RADBench overview" width="85%"/>
 </p>
@@ -100,12 +97,76 @@ dataset/
 └── GTA/...
 ```
 
-## Roadmap
+## Evaluation
 
-- [x] Paper: [IEEE Xplore](https://ieeexplore.ieee.org/abstract/document/11623818/)
-- [x] Project page: [robustautonomousdriving.github.io](https://robustautonomousdriving.github.io)
-- [x] Dataset on Hugging Face
-- [ ] Code for running models on the benchmark
+Run every step from the repository root, with `dataset/` downloaded as above. A model's responses go through four
+steps: run the model, convert its responses into judge prompts, judge them with o3, and compute accuracy.
+
+### 1. Install and set up API keys
+
+```bash
+pip install -r requirements.txt
+```
+
+The scripts read API keys from text files in `api_key/`, which is ignored by git:
+
+| Provider | Key file | Used for |
+|---|---|---|
+| OpenAI | `api_key/openai_key.txt` | GPT and o-series models, and the o3 judge |
+| Anthropic | `api_key/claude_key.txt` | Claude models |
+| Google | `api_key/gemini_key.txt` | Gemini models |
+
+```bash
+mkdir -p api_key
+echo "YOUR_OPENAI_API_KEY" > api_key/openai_key.txt
+```
+
+Use `--api-key-path` to read a key from another file. A local vLLM server needs no key.
+
+### 2. Run a model
+
+```bash
+python code/main_api.py --provider openai --model gpt-4.1 --n-frames 16 --task-name 16_frames
+```
+
+- `--provider`: `openai`, `claude` or `gemini`
+- `--n-frames`: `16` for the main benchmark; `4`, `8` or `32` for the frame ablation
+- `--batch`: use the provider's batch API (OpenAI and Claude), cheaper for full runs
+- `--test`: run only the first 30 entries as a quick check
+
+Responses are saved to `results/<task-name>/<model>/<task-name>_<model>.json`. Running the same command again resumes
+any missing entries.
+
+Open-source models can be served with [vLLM](https://docs.vllm.ai)'s OpenAI-compatible server:
+
+```bash
+vllm serve Qwen/Qwen2.5-VL-7B-Instruct --limit-mm-per-prompt '{"image": 16}'
+python code/main_api.py --provider openai --openai-base-url http://localhost:8000/v1 \
+  --model Qwen/Qwen2.5-VL-7B-Instruct --n-frames 16 --task-name 16_frames
+```
+
+### 3. Judge the responses with o3
+
+```bash
+python code/convert_to_judging_format.py results/16_frames/gpt-4.1/16_frames_gpt-4.1.json
+python code/judge_api.py --input-file results/16_frames/gpt-4.1/16_frames_gpt-4.1_for_judging.json
+```
+
+The first command pairs each response with its ground truth in the judge prompt and saves a `_for_judging.json` file.
+The second sends these prompts to o3 and saves its Yes/No verdicts to
+`results/judge/judge_16_frames_gpt-4.1_for_judging.json`.
+
+### 4. Compute accuracy
+
+```bash
+python code/compute_accuracy.py results/judge/judge_16_frames_gpt-4.1_for_judging.json
+```
+
+Accuracy is the share of "Yes" verdicts. The script prints it for all scenarios, for real and synthetic clips, and
+for each source (MM-AU, UnusualData, VEO3, GTA).
+
+*The models tested in the paper may have been deprecated since. Please check the API providers for their latest
+models.*
 
 ## Citation
 
